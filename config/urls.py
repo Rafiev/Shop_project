@@ -13,10 +13,27 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title='Python 24 Shop',
+        default_version='V1',
+        description='Internet Shop'
+    ),
+    public=True
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('swagger/', schema_view.with_ui('swagger')),
     path('api/v1/account/', include('applications.account.urls')),
-]
+    path('api/v1/product/', include('applications.product.urls')),
+    path('api/v1/feedback/', include('applications.feedback.urls')),
+    path('api/v1/order/', include('applications.order.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
